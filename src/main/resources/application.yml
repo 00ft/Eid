@@ -1,0 +1,25 @@
+# 应用名称
+spring:
+  application:
+    name: validate
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://47.110.80.103:13306/cover?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&&allowMultiQueries=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    minIdle: 5
+    maxActive: 200
+    initialSize: 5
+    timeBetweenEvictionRunsMillis: 3000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 'ZTM' FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: true
+    testOnReturn: false
+
+server:
+  port: 40002
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+

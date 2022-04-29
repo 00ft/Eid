@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.importMapper">
+    <insert id="importEid">
+        insert into eid_anhui(epc,eid_id,order_num,create_time) values (#{epc},#{eid_id},#{order_num},#{create_time})
+    </insert>
+    <select id="validate" resultType="int">
+        select count(*) from eid_anhui where eid_id=#{rfid,jdbcType=VARCHAR}
+    </select>
+    <select id="validateEpc" resultType="string">
+        select eid_id from eid_anhui where epc=#{epc,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

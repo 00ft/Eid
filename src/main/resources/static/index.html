@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="../js/jquery.min.js"></script>
+<script>
+/*$(function (){
+    var jsonObject={};
+    $.ajax({
+        type:"POST",// 请求的方式 GET  POST
+        dataType:"text",
+        contentType:"application/json",
+        url:"http://localhost:40001/addEid", // 请求的后台服务的路径
+        data: JSON.stringify(jsonObject),// 提交的参数
+        success:function (data){
+                console.log("成功")
+        }
+
+    })
+})*/
+
+function checkEpc(){
+    var jsonObject={
+        "epc":$(".epcId").val()
+    };
+    $.ajax({
+        type:"POST",// 请求的方式 GET  POST
+        dataType:"text",
+        contentType:"application/json",
+        url:"http://localhost:40002/validateEpc", // 请求的后台服务的路径
+        data: JSON.stringify(jsonObject),// 提交的参数
+        success:function (data){
+            console.log(data);
+            var obj=JSON.parse(data);
+            var resCode=obj.resCode;
+            if(resCode==1){
+                alert(obj.tidList);
+                console.log(obj.tidList)
+            }else {
+                alert(obj.msg);
+                console.log(obj.msg)
+            }
+        }
+
+    })
+}
+
+function sub(){
+    var jsonObject={
+        "epc":$(".epc").val(),
+        "eid_id":$(".eid_id").val(),
+        "order_num":$(".order_num").val()
+    };
+    $.ajax({
+        type:"POST",// 请求的方式 GET  POST
+        dataType:"text",
+        contentType:"application/json",
+        url:"http://localhost:40002/import", // 请求的后台服务的路径
+        data: JSON.stringify(jsonObject),// 提交的参数
+        success:function (data){
+            console.log(data);
+            var obj=JSON.parse(data);
+            console.log(obj);
+            var flag=obj.flag;
+            alert(obj.msg);
+        }
+
+    })
+}
+
+function check(){
+    var jsonObject={
+        "rfid":$(".checkeid").val()
+    };
+    $.ajax({
+        type:"POST",// 请求的方式 GET  POST
+        dataType:"text",
+        contentType:"application/json",
+        url:"http://localhost:40002/validate/validate", // 请求的后台服务的路径
+        data: JSON.stringify(jsonObject),// 提交的参数
+        success:function (data){
+            var obj=JSON.parse(data);
+            console.log(obj.msg);
+            if(obj.flag){
+                alert("存在");
+
+            }else{
+                alert(obj.msg);
+            }
+        }
+
+    })
+}
+
+</script>
+<body>
+<center>
+<form>
+    <table>
+        <tr>
+            <td>epc:</td>
+            <td><input type="text" class="epc" style="width: 200px"></td>
+            <td>
+                eid_id:
+            </td>
+            <td><input type="text " class="eid_id" style="width: 200px"></td>
+            <td>order_num:</td>
+            <td><input type="text" class="order_num"></td>
+            <td><input type="button" class="sub" onclick="sub()" value="提交" ></input> </td>
+        </tr>
+        <tr>
+            <td style="position: relative;top: 100px">eid：</td>
+            <td ><input type="text" class="checkeid" style="position: relative;top: 100px;width: 200px"></td>
+            <td><input type="button" class="selected" onclick="check()" value="查询" style="position: relative;top: 100px;width: 100px"></input> </td>
+        </tr>
+    </table>
+</form>
+</center>
+<center>
+    <div>
+        <input type="file" id="files" style="display:none" onchange="imported();"/>
+        <input type="button" id="import" value="导入文件" style="position:relative;top: 150px;width: 80px;right: 250px"/>
+    </div>
+    <div style="position: relative;top: 180px;right: 300px">
+        epc校验:<input type="text" class="epcId">
+        <input type="button" onclick="checkEpc()"  value="校验">
+    </div>
+</center>
+
+<script>
+$("#import").click(function(){//点击导入按钮，使files触发点击事件，然后完成读取文件的操作。
+$("#files").click();
+});
+
+function imported(){
+var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
+var name = selectedFile.name;//读取选中文件的文件名
+var size = selectedFile.size;//读取选中文件的大小
+console.log("文件名:"+name+"大小："+size);
+console.log($("#files").val());
+var file=$("#files").get(0).files[0];
+var formData=new FormData();
+formData.append("file",file);
+console.log(formData);
+    $.ajax({
+        type:"POST",// 请求的方式 GET  POST
+        dataType:"text",
+        contentType:"application/json",
+        url:"http://localhost:40002/importExcel", // 请求的后台服务的路径
+        data: formData,// 提交的参数
+        contentType:false,
+        processData: false,
+        success:function (data){
+            var obj=JSON.parse(data);
+            console.log("导入成功");
+            alert(obj.msg);
+        },
+        error:function (){
+            location.reload();
+            alert("系统异常");
+
+        }
+
+    })
+
+
+/*reader.onload = function(){
+console.log(this.result);//当读取完成之后会回调这个函数，然后此时文件的内容存储到了result中。直接操作即可。
+};*/
+}
+</script>
+</body>
+</html>
